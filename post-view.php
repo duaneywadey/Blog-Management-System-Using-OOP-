@@ -12,11 +12,29 @@ if (!$user->isLoggedIn()) {
 	$user->redirect('login.php');
 }
 
+
 if(isset($_GET["id"]) && !empty($_GET['id'])) {
 	$post_id = $_GET['id'];
 	$postDetails = $post->getPostById($post_id);
-	$allComments = $post->viewAllComments($post_id);
+	$allComments = $post->fetchAllComments($post_id);
 }
+
+if(isset($_POST['commentToPost'])) {
+	$user = $_SESSION['user_id'];
+	$description = $_POST['description'];
+	$post->writeAComment($post_id, $user, $description);
+	header("Location: post-view.php?id=" . $post_id);
+	exit();
+
+}
+
+if(isset($_POST['deleteCommentBtn'])) {
+    $comment_id = $_POST['comment_id'];
+    $post->deleteAComment($comment_id);
+    header("Location: index.php");
+	exit();
+}
+
 
 
 ?>
@@ -40,7 +58,19 @@ if(isset($_GET["id"]) && !empty($_GET['id'])) {
 						<h4 class="mt-4"><?php echo $postDetails['title']; ?></h4>
 						<p><?php echo $postDetails['description']; ?></p>
 					</div>
-				</div> 			
+				</div>
+				<div class="mt-4">
+					<form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) . '?id=' . $post_id;?>" method="POST">
+						<div class="mb-3">
+							<input type="hidden" value="<?php echo $postDetails['post_id']; ?>" name="post_id">
+						</div>
+						<div class="mb-3">
+							<label for="exampleFormControlTextarea1" class="form-label">Comment</label>
+							<textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="description"></textarea>
+						</div>
+						<input type="submit" class="btn btn-primary" name="commentToPost">
+					</form> 			
+				</div>
 			</div>
 			<div class="col-md-4 mt-4">
 				<div class="card" style="height: 500px; overflow-y: scroll;">
@@ -48,30 +78,22 @@ if(isset($_GET["id"]) && !empty($_GET['id'])) {
 						<div class="card-title"><h2>All Comments</h2></div>
 					</div>
 					<div class="card-body">
-						<div class="comment">
-							<h4>Ivan</h4>
-							<p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Cupiditate enim pariatur quidem id excepturi ad aliquid molestias ratione, facilis error libero laboriosam ut nisi odio, fugit esse iste officiis saepe.</p>
-						</div>
-						<div class="comment">
-							<h4>Ivan</h4>
-							<p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Cupiditate enim pariatur quidem id excepturi ad aliquid molestias ratione, facilis error libero laboriosam ut nisi odio, fugit esse iste officiis saepe.</p>
-						</div>
-						<div class="comment">
-							<h4>Ivan</h4>
-							<p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Cupiditate enim pariatur quidem id excepturi ad aliquid molestias ratione, facilis error libero laboriosam ut nisi odio, fugit esse iste officiis saepe.</p>
-						</div>
-						<div class="comment">
-							<h4>Ivan</h4>
-							<p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Cupiditate enim pariatur quidem id excepturi ad aliquid molestias ratione, facilis error libero laboriosam ut nisi odio, fugit esse iste officiis saepe.</p>
-						</div>
-						<div class="comment">
-							<h4>Ivan</h4>
-							<p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Cupiditate enim pariatur quidem id excepturi ad aliquid molestias ratione, facilis error libero laboriosam ut nisi odio, fugit esse iste officiis saepe.</p>
-						</div>
-						<div class="comment">
-							<h4>Ivan</h4>
-							<p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Cupiditate enim pariatur quidem id excepturi ad aliquid molestias ratione, facilis error libero laboriosam ut nisi odio, fugit esse iste officiis saepe.</p>
-						</div>
+						<?php $allComments = $post->fetchAllComments($post_id); ?>
+						<?php foreach($allComments as $comment) { ?>
+							<div class="card mb-3">
+								<div class="card-body">
+									<div class="comment">
+										<form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
+											<input type="hidden" value="<?php echo $comment['comment_id']; ?>" name="comment_id">
+											<input type="submit" class="btn btn-danger float-end" value="Delete" name="deleteCommentBtn">
+										</form>
+										<h4><?php echo $comment['username']; ?></h4>
+										<small><i><?php echo date("D, d M Y H:i:s", strtotime($comment['date_created'])); ?></i></small>
+										<p><?php echo $comment['description']; ?></p>
+									</div>	
+								</div>
+							</div>
+						<?php } ?>
 					</div>
 				</div>
 			</div>

@@ -101,9 +101,9 @@ class Post {
 		}
 	}
 
-	public function viewAllComments($post_id) {
+	public function fetchAllComments($post_id) {
 		try {
-			$sql = "SELECT comments.description FROM comments JOIN posts on comments.post_id = posts.id WHERE posts.id=?";
+			$sql = "SELECT DISTINCT comments.description AS description, users.username AS username, comments.date_created, comments.id AS comment_id FROM comments JOIN posts on comments.post_id = posts.id JOIN users on comments.user_id = users.id WHERE posts.id=?";
 			$stmt = $this->pdo->prepare($sql);
 			$stmt->execute([$post_id]);
 			return $stmt->fetchAll();
@@ -119,12 +119,16 @@ class Post {
 			$stmt = $this->pdo->prepare($sql);
 			$stmt->execute([$post_id, $user_id, $description]);
 
-			if ($stmt->execute()) {
-				return true;
-			} 
-			else {
-				return $stmt->errorInfo();
-			}
+		} catch (PDOException $e) {
+			die($e->getMessage());
+		}
+	}
+
+	public function deleteAComment($comment_id) {
+		try {
+			$sql = "DELETE FROM comments WHERE id=?";
+			$stmt = $this->pdo->prepare($sql);
+			$stmt->execute([$comment_id]);
 
 		} catch (PDOException $e) {
 			die($e->getMessage());

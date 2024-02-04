@@ -71,10 +71,10 @@ if(isset($_POST['deleteBtn'])) {
           <?php foreach ($post->viewPostsByUser($_SESSION['user_id']) as $column) { ?>
             <div class="card shadow-sm p-3 mb-5 bg-body rounded">
               <div class="card-body">
-                <a href="post-edit.php?id=<?php echo $column['id']; ?>" class=" float-end btn btn-primary">Edit</a>
+                <a href="post-edit.php?id=<?php echo $column['id']; ?>" class="btn btn-primary float-end">Edit</a>
                 <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
                   <input type="hidden" value="<?php echo $column['id']; ?>" name="post_id">
-                  <input type="submit" class="btn btn-danger float-end" value="Delete" name="deleteBtn">         
+                  <input type="submit " class="btn btn-danger float-end" value="Delete" name="deleteBtn">
                 </form>
                 <h4 class="mt-4"><?php echo $column['title']; ?></h4>
                 <small><i><?php echo date("D, d M Y H:i:s", strtotime($column['date_created'])); ?></i></small>
