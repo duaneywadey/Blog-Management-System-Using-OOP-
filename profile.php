@@ -78,11 +78,26 @@ if(isset($_POST['deleteBtn'])) {
             <div class="card-header">
               <div class="card-title"><h3>All Friends</h3></div>
             </div>
-            <?php foreach ($friend->viewFriendsByUser($_SESSION['user_id']) as $column) { ?>
-              <div class="card-body">
-                <h3><?php echo $column['friend_name']; ?>, <?php echo date("D, d M Y H:i:s", strtotime($column['date_added'])); ?></h3>
-              </div>
-            <?php } ?>
+            
+            <div class="card-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Friend Name</th>
+                    <th scope="col">Date Added</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php foreach ($friend->viewFriendsByUser($_SESSION['user_id']) as $column) { ?>
+                    <tr>
+                      <td><?php echo $column['friend_name']; ?></td>
+                      <td><?php echo date("D, d M Y H:i:s", strtotime($column['date_added'])); ?></td>
+                    </tr>
+                  <?php } ?>
+                </tbody>
+              </table>
+            </div>
+            
           </div>
         </div>
       </div>

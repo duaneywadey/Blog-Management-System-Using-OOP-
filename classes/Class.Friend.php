@@ -13,12 +13,11 @@ class Friend {
 	}
 
 
-	public function viewAllUsers() {
+	public function viewAllUsers($user) {
 		try {
-			$sql = "SELECT * FROM users";
+			$sql = "SELECT * FROM users WHERE NOT id=?";
 			$stmt = $this->pdo->prepare($sql);
-			$stmt->execute();
-
+			$stmt->execute([$user]);
 			return $stmt->fetchAll();
 		}
 		catch (PDOException $e) {

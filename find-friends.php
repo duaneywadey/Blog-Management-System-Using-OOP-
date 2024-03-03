@@ -20,8 +20,7 @@ if ($_POST['addNewFriend']) {
     <?php include('includes/navbar.php'); ?>
     <div class="container">
       <div class="row">
-        <?php $allUsers = $friend->viewAllUsers(); ?>
-        <?php foreach ($allUsers as $column) { ?>
+        <?php foreach ($friend->viewAllUsers($_SESSION['user_id']) as $column) { ?>
           <div class="col-md-4 mt-4">
             <div class="card">
               <div class="card-header"></div>
