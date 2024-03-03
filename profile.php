@@ -1,13 +1,5 @@
 <?php
-
-
-session_start();
-require_once('config/dbcon.php');
-require_once('classes/Class.User.php');
-require_once('classes/Class.Post.php');
-
-$user = new User($pdo);
-$post = new Post($pdo);
+require_once('config/load-classes.php');
 
 if (!$user->isLoggedIn()) 
 {
@@ -65,16 +57,14 @@ if(isset($_POST['deleteBtn'])) {
     					<h5>Email: <?php echo $_SESSION['email']; ?></h5>
     				</div>
     			</div>
-        </div>
-        <h2 class="mt-4">All Posts:</h2>
-        <div class="col-md-6">
-          <?php foreach ($post->viewPostsByUser($_SESSION['user_id']) as $column) { ?>
-            <div class="card shadow-sm p-3 mb-5 bg-body rounded">
-              <div class="card-body">
-                <a href="post-edit.php?id=<?php echo $column['id']; ?>" class="btn btn-primary float-end">Edit</a>
-                <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
+          <div class="card shadow-sm mb-5 mt-4 bg-body rounded">
+            <div class="card-header"><h2>All Posts:</h2></div>
+            <div class="card-body">
+              <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
+                <?php foreach ($post->viewPostsByUser($_SESSION['user_id']) as $column) { ?>
                   <input type="hidden" value="<?php echo $column['id']; ?>" name="post_id">
-                  <input type="submit " class="btn btn-danger float-end" value="Delete" name="deleteBtn">
+                  <a href="post-edit.php?id=<?php echo $column['id']; ?>" class="btn btn-primary float-end" style="margin-left: 4px;">Edit</a>
+                  <input type="submit" class="btn btn-danger float-end" value="Delete" name="deleteBtn">
                 </form>
                 <h4 class="mt-4"><?php echo $column['title']; ?></h4>
                 <small><i><?php echo date("D, d M Y H:i:s", strtotime($column['date_created'])); ?></i></small>
@@ -83,7 +73,20 @@ if(isset($_POST['deleteBtn'])) {
             </div>
           <?php } ?>
         </div>
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><h3>All Friends</h3></div>
+            </div>
+            <?php foreach ($friend->viewFriendsByUser($_SESSION['user_id']) as $column) { ?>
+              <div class="card-body">
+                <h3><?php echo $column['friend_name']; ?>, <?php echo date("D, d M Y H:i:s", strtotime($column['date_added'])); ?></h3>
+              </div>
+            <?php } ?>
+          </div>
+        </div>
       </div>
     </div>
-  </body>
-  </html>
+  </div>
+</body>
+</html>

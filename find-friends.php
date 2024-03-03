@@ -1,6 +1,11 @@
 <?php 
 require_once('config/load-classes.php');
 
+if ($_POST['addNewFriend']) {
+  $user = $_SESSION['user_id'];
+  $friend_id = $_POST['friend_id'];
+  $friend->addAFriend($user, $friend_id);
+}
 ?>
 
 <!doctype html>
@@ -20,7 +25,12 @@ require_once('config/load-classes.php');
           <div class="col-md-4 mt-4">
             <div class="card">
               <div class="card-header"></div>
-              <div class="card-body"><h2><?php echo $column['username']; ?></h2></div>
+              <div class="card-body"><h2><?php echo $column['username']; ?></h2>
+                <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
+                  <input type="hidden" name="friend_id" value='<?php echo $column['id']; ?>'>
+                  <input type="submit" class="btn btn-primary" value="Add Friend" name="addNewFriend">
+                </form>
+              </div>
             </div>
           </div>
         <?php } ?>
