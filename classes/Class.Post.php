@@ -94,20 +94,20 @@ class Post {
 		try {
 			$sql = "
 					SELECT 
-						users.id AS user_id,
 						users.username AS username, 
 						posts.id AS post_id, 
+						posts.user AS user_id_post,
 						posts.title AS title, 
 						posts.description AS description, 
 						posts.date_created AS date_created
 					FROM posts
 					JOIN users ON users.id = posts.user
-					JOIN friends ON posts.user = friends.friend_id
-					WHERE users.id = ? OR friends.friend_id IN (
+					WHERE users.id = ? OR users.id IN (
 						SELECT friend_id FROM friends WHERE user = ?
-					)
+					)						
 					ORDER BY date_created DESC;
 					";
+
 			$stmt = $this->pdo->prepare($sql);
 			$stmt->execute([$user,$user]);
 
