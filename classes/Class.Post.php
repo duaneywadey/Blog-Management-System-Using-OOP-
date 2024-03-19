@@ -1,4 +1,5 @@
 <?php
+// require_once('../config/dbcon.php');
 
 class Post {
 	
@@ -25,18 +26,12 @@ class Post {
 		}
 	}
 
+
 	public function deletePost($post_id) {
 		try {
-			$sql = "DELETE FROM posts WHERE id=:post_id";
+			$sql = "DELETE FROM posts WHERE id=?";
 			$stmt = $this->pdo->prepare($sql);
-			$stmt->bindParam(':post_id', $post_id, PDO::PARAM_INT);
-			if ($stmt->execute()) {
-				return true;
-			} 
-			else {
-				return $stmt->errorInfo();
-			}
-
+			$stmt->execute([$post_id]);
 		}
 		catch (PDOException $e) {
 			die($e->getMessage());
@@ -78,6 +73,34 @@ class Post {
 
 			$stmt = $this->pdo->prepare($sql);
 			$stmt->execute();
+
+			return $stmt->fetchAll();
+
+		} catch (PDOException $e) {
+			die($e->getMessage());
+		}
+	}
+
+	public function viewAllPostsByFriends($user) {
+		try {
+			$sql = "
+			SELECT 
+				users.id AS user_id,
+				users.username AS username, 
+				posts.id AS post_id, 
+				posts.title AS title, 
+				posts.description AS description, 
+				posts.date_created AS date_created
+			FROM posts
+			JOIN users ON users.id = posts.user
+			JOIN friends ON posts.user = friends.friend_id
+			WHERE friends.friend_id IN (
+				SELECT friend_id FROM friends WHERE user = ?
+			);
+			ORDER BY date_created DESC
+			";
+			$stmt = $this->pdo->prepare($sql);
+			$stmt->execute([$user]);
 
 			return $stmt->fetchAll();
 
@@ -129,6 +152,7 @@ class Post {
 			$sql = "DELETE FROM comments WHERE id=?";
 			$stmt = $this->pdo->prepare($sql);
 			$stmt->execute([$comment_id]);
+			
 
 		} catch (PDOException $e) {
 			die($e->getMessage());
@@ -136,6 +160,8 @@ class Post {
 	}
 
 }
+// $obj = new Post($pdo);
+// $allPosts = $obj->viewAllPostsByFriends(8);
 
 
 

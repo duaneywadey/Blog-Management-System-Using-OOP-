@@ -53,8 +53,12 @@ if(isset($_POST['createPost'])) {
           </div>
         </div>
         <div class="col-md-8 mt-4">
-          <?php $allPosts = $post->viewAllPosts();?>
-          <?php foreach ($allPosts as $column) { ?>
+          <?php 
+            $friendPosts = $post->viewAllPostsByFriends($_SESSION['user_id']);
+
+            if (!empty($friendPosts)) {
+              foreach ($friendPosts as $column) { 
+          ?>
             <div class="card shadow-sm p-3 mb-5 bg-body rounded">
               <div class="card-body">
                 <h3 class="text-secondary"><?php echo $column['username']; ?></h3>
@@ -64,7 +68,10 @@ if(isset($_POST['createPost'])) {
                 <a href="post-view.php?id=<?php echo $column['post_id']; ?>">View Comments</a>
               </div>
             </div>
-          <?php } ?>
+          <?php }} else {
+              echo "<p class='text-center'>You may add some new friends to see blog posts here!</p>";
+            }
+          ?>
         </div>
       </div>
     </div>

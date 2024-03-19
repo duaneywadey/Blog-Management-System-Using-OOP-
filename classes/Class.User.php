@@ -81,7 +81,16 @@ class User {
 
 	public function login($uname, $pass) {
 		try {
-			$sql = "SELECT id, username, email, password FROM users WHERE username = ? OR email = ?";
+			$sql = "
+					SELECT 
+						id, 
+						username, 
+						email, 
+						password 
+					FROM users 
+					WHERE username = ? OR email = ?
+					";
+
 			$stmt = $this->pdo->prepare($sql);
 			$stmt->execute([$uname, $pass]);
 

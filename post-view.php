@@ -13,6 +13,7 @@ if (!$user->isLoggedIn()) {
 }
 
 
+// Included in the URL
 if(isset($_GET["id"]) && !empty($_GET['id'])) {
 	$post_id = $_GET['id'];
 	$postDetails = $post->getPostById($post_id);
@@ -25,13 +26,13 @@ if(isset($_POST['commentToPost'])) {
 	$post->writeAComment($post_id, $user, $description);
 	header("Location: post-view.php?id=" . $post_id);
 	exit();
-
+	
 }
 
 if(isset($_POST['deleteCommentBtn'])) {
-    $comment_id = $_POST['comment_id'];
-    $post->deleteAComment($comment_id);
-    header("Location: index.php");
+	$comment_id = $_POST['comment_id'];
+	$post->deleteAComment($comment_id);
+	header("Location: post-view.php?id=" . $post_id);
 	exit();
 }
 
@@ -83,7 +84,7 @@ if(isset($_POST['deleteCommentBtn'])) {
 							<div class="card mb-3">
 								<div class="card-body">
 									<div class="comment">
-										<form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
+										<form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) . '?id=' . $post_id;?>" method="POST">
 											<input type="hidden" value="<?php echo $comment['comment_id']; ?>" name="comment_id">
 											<input type="submit" class="btn btn-danger float-end" value="Delete" name="deleteCommentBtn">
 										</form>

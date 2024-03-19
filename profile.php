@@ -50,58 +50,75 @@ if(isset($_POST['deleteBtn'])) {
     		<div class="col-md-6">
     			<div class="card">
     				<div class="card-header">
-    					<div class="card-title"><h3>Your Profile</h3></div>
+    					<div class="card-title"><h3>Your Profile and All Posts</h3></div>
     				</div>
     				<div class="card-body">
     					<h5>Name: <?php echo $_SESSION['username']; ?></h5>
     					<h5>Email: <?php echo $_SESSION['email']; ?></h5>
     				</div>
     			</div>
-          <div class="card shadow-sm mb-5 mt-4 bg-body rounded">
-            <div class="card-header"><h2>All Posts:</h2></div>
-            <div class="card-body">
-              <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
-                <?php foreach ($post->viewPostsByUser($_SESSION['user_id']) as $column) { ?>
-                  <input type="hidden" value="<?php echo $column['id']; ?>" name="post_id">
-                  <a href="post-edit.php?id=<?php echo $column['id']; ?>" class="btn btn-primary float-end" style="margin-left: 4px;">Edit</a>
-                  <input type="submit" class="btn btn-danger float-end" value="Delete" name="deleteBtn">
-                </form>
-                <h4 class="mt-4"><?php echo $column['title']; ?></h4>
-                <small><i><?php echo date("D, d M Y H:i:s", strtotime($column['date_created'])); ?></i></small>
-                <p><?php echo $column['description']; ?></p>
+          <?php
+          $allUserLoggedInPosts = $post->viewPostsByUser($_SESSION['user_id']);
+          if(!empty($allUserLoggedInPosts)){
+            foreach ($post->viewPostsByUser($_SESSION['user_id']) as $column) { 
+              ?>
+              <div class="card shadow-sm mb-5 mt-4 bg-body rounded">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-12">
+                      <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
+                        <input type="hidden" value="<?php echo $column['id']; ?>" name="post_id">
+                        <a href="post-edit.php?id=<?php echo $column['id']; ?>" class="btn btn-primary float-end" style="margin-left: 4px;">Edit</a>
+                        <input type="submit" class="btn btn-danger float-end" value="Delete" name="deleteBtn">
+                      </form>
+                      <h4 class="mt-4"><?php echo $column['title']; ?></h4>
+                      <small><i><?php echo date("D, d M Y H:i:s", strtotime($column['date_created'])); ?></i></small>
+                      <p><?php echo $column['description']; ?></p>  
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <?php }} else {
+              echo "<h2 class='mt-4 text-success'>You may start posting blogs now!</h2>";
+            }
+            ?>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title"><h3>All Friends</h3></div>
+              </div>
+
+              <div class="card-body">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Friend Name</th>
+                      <th scope="col">Date Added</th>
+                    </tr>
+                  </thead>
+                  <?php 
+                  $allFriends = $friend->viewFriendsByUser($_SESSION['user_id']); 
+                  if(!empty($allFriends)) {
+                    foreach ($allFriends as $column) {
+                  ?>
+                      <tbody>
+                        <tr>
+                          <td><?php echo $column['friend_name']; ?></td>
+                          <td><?php echo date("D, d M Y H:i:s", strtotime($column['date_added'])); ?></td>
+                        </tr>
+                      <?php }} else {
+                        echo "<p class='text-center'>You may add some new friends!</p>"; 
+                      }
+                      ?>
+                    </tbody>
+                  </table>
+                </div>
+
               </div>
             </div>
-          <?php } ?>
-        </div>
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title"><h3>All Friends</h3></div>
-            </div>
-            
-            <div class="card-body">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col">Friend Name</th>
-                    <th scope="col">Date Added</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php foreach ($friend->viewFriendsByUser($_SESSION['user_id']) as $column) { ?>
-                    <tr>
-                      <td><?php echo $column['friend_name']; ?></td>
-                      <td><?php echo date("D, d M Y H:i:s", strtotime($column['date_added'])); ?></td>
-                    </tr>
-                  <?php } ?>
-                </tbody>
-              </table>
-            </div>
-            
           </div>
         </div>
       </div>
-    </div>
-  </div>
-</body>
-</html>
+    </body>
+    </html>

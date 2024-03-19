@@ -19,20 +19,7 @@ if (isset($_POST['addNewFriend'])) {
   <body>
     <?php include('includes/navbar.php'); ?>
     <div class="container">
-      <div class="row">
-        <?php foreach ($friend->viewAllUsers($_SESSION['user_id']) as $column) { ?>
-          <div class="col-md-4 mt-4">
-            <div class="card">
-              <div class="card-body"><h2><?php echo $column['username']; ?></h2>
-                <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
-                  <input type="hidden" name="friend_id" value='<?php echo $column['id']; ?>'>
-                  <input type="submit" class="btn btn-primary" value="Add Friend" name="addNewFriend">
-                </form>
-              </div>
-            </div>
-          </div>
-        <?php } ?>
-      </div>
+      
     </div>
   </body>
   </html>
