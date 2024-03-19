@@ -13,7 +13,7 @@ if (!$user->isLoggedIn()) {
 }
 
 
-// Included in the URL
+// Included in the URL, to get view all comments
 if(isset($_GET["id"]) && !empty($_GET['id'])) {
 	$post_id = $_GET['id'];
 	$postDetails = $post->getPostById($post_id);
@@ -80,17 +80,19 @@ if(isset($_POST['deleteCommentBtn'])) {
 					</div>
 					<div class="card-body">
 						<?php $allComments = $post->fetchAllComments($post_id); ?>
-						<?php foreach($allComments as $comment) { ?>
+						<?php foreach($allComments as $column) { ?>
 							<div class="card mb-3">
 								<div class="card-body">
 									<div class="comment">
+										<?php if($column['user_id'] == $_SESSION['user_id']) { ?>
 										<form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) . '?id=' . $post_id;?>" method="POST">
-											<input type="hidden" value="<?php echo $comment['comment_id']; ?>" name="comment_id">
+											<input type="hidden" value="<?php echo $column['comment_id']; ?>" name="comment_id">
 											<input type="submit" class="btn btn-danger float-end" value="Delete" name="deleteCommentBtn">
 										</form>
-										<h4><?php echo $comment['username']; ?></h4>
-										<small><i><?php echo date("D, d M Y H:i:s", strtotime($comment['date_created'])); ?></i></small>
-										<p><?php echo $comment['description']; ?></p>
+										<?php } ?>
+										<h4><?php echo $column['username']; ?></h4>
+										<small><i><?php echo date("D, d M Y H:i:s", strtotime($column['date_created'])); ?></i></small>
+										<p><?php echo $column['description']; ?></p>
 									</div>	
 								</div>
 							</div>

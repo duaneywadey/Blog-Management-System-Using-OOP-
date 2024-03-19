@@ -1,4 +1,5 @@
 <?php
+// For debugging
 // require_once('../config/dbcon.php');
 
 class Post {
@@ -42,7 +43,15 @@ class Post {
 	public function getPostById($post_id)
 	{
 		try {
-			$sql = "SELECT users.username AS username, posts.id AS post_id, posts.title AS title, posts.description AS description, posts.date_created AS date_created FROM posts JOIN users ON users.id = posts.user WHERE posts.id=? ORDER BY date_created DESC";
+			$sql = "SELECT 
+						users.username AS username, 
+						posts.id AS post_id, 
+						posts.title AS title, 
+						posts.description AS description, 
+						posts.date_created AS date_created 
+					FROM posts 
+					JOIN users ON users.id = posts.user 
+					WHERE posts.id=? ORDER BY date_created DESC";
 
 			$stmt = $this->pdo->prepare($sql);
 			$stmt->execute([$post_id]);
@@ -113,10 +122,13 @@ class Post {
 
 	public function viewPostsByUser($user) {
 		try {
-			$sql = "SELECT * FROM posts WHERE user=:user ORDER BY date_created DESC";
+			$sql = "
+					SELECT * FROM posts 
+					WHERE user=? 
+					ORDER BY date_created DESC
+					";
 			$stmt = $this->pdo->prepare($sql);
-			$stmt->bindParam(':user', $user, PDO::PARAM_INT);
-			$stmt->execute();
+			$stmt->execute([$user]);
 
 			return $stmt->fetchAll();
 		} catch (PDOException $e) {
@@ -126,7 +138,16 @@ class Post {
 
 	public function fetchAllComments($post_id) {
 		try {
-			$sql = "SELECT DISTINCT comments.description AS description, users.username AS username, comments.date_created, comments.id AS comment_id FROM comments JOIN posts on comments.post_id = posts.id JOIN users on comments.user_id = users.id WHERE posts.id=?";
+			$sql = "SELECT
+						comments.user_id AS user_id,
+						users.username AS username, 
+						comments.description AS description, 
+						comments.date_created, 
+						comments.id AS comment_id 
+					FROM comments 
+					JOIN posts on comments.post_id = posts.id 
+					JOIN users on comments.user_id = users.id WHERE posts.id=?
+					";
 			$stmt = $this->pdo->prepare($sql);
 			$stmt->execute([$post_id]);
 			return $stmt->fetchAll();
@@ -161,7 +182,8 @@ class Post {
 
 }
 // $obj = new Post($pdo);
-// $allPosts = $obj->viewAllPostsByFriends(8);
+// $allPosts = $obj->fetchAllComments(3);
+// print_r($allPosts);
 
 
 

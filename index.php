@@ -65,7 +65,10 @@ if(isset($_POST['createPost'])) {
                 <small><i><?php echo date("D, d M Y H:i:s", strtotime($column['date_created'])); ?></i></small>
                 <h4 class="mt-4"><?php echo $column['title']; ?></h4>
                 <p><?php echo $column['description']; ?></p>
+
+                <!-- To view all comments from the post -->
                 <a href="post-view.php?id=<?php echo $column['post_id']; ?>">View Comments</a>
+
               </div>
             </div>
           <?php }} else {
