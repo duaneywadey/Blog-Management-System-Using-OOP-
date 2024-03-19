@@ -19,7 +19,17 @@ if (isset($_POST['addNewFriend'])) {
   <body>
     <?php include('includes/navbar.php'); ?>
     <div class="container">
-      
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div class="card mt-4">
+            <div class="card-header">
+              <h2>Friend Requests</h2>
+            </div>
+            <div class="card-body">
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </body>
   </html>

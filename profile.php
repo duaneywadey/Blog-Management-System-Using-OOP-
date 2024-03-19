@@ -46,42 +46,42 @@ if(isset($_POST['deleteBtn'])) {
   <body>
     <?php include('includes/navbar.php'); ?>
     <div class="container">
-    	<div class="row mt-4">
-    		<div class="col-md-6">
-    			<div class="card">
-    				<div class="card-header">
-    					<div class="card-title"><h3>Your Profile and All Posts</h3></div>
-    				</div>
-    				<div class="card-body">
-    					<h5>Name: <?php echo $_SESSION['username']; ?></h5>
-    					<h5>Email: <?php echo $_SESSION['email']; ?></h5>
-    				</div>
-    			</div>
-          <?php
-          $allUserLoggedInPosts = $post->viewPostsByUser($_SESSION['user_id']);
-          if(!empty($allUserLoggedInPosts)){
-            foreach ($post->viewPostsByUser($_SESSION['user_id']) as $column) { 
-              ?>
-              <div class="card shadow-sm mb-5 mt-4 bg-body rounded">
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col-12">
-                      <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
-                        <input type="hidden" value="<?php echo $column['id']; ?>" name="post_id">
-                        <a href="post-edit.php?id=<?php echo $column['id']; ?>" class="btn btn-primary float-end" style="margin-left: 4px;">Edit</a>
-                        <input type="submit" class="btn btn-danger float-end" value="Delete" name="deleteBtn">
-                      </form>
-                      <h4 class="mt-4"><?php echo $column['title']; ?></h4>
-                      <small><i><?php echo date("D, d M Y H:i:s", strtotime($column['date_created'])); ?></i></small>
-                      <p><?php echo $column['description']; ?></p>  
+      <div class="row mt-4">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title"><h3>Your Profile and All Posts</h3></div>
+            </div>
+            <div class="card-body" style="height: 500px; overflow-y: scroll;">
+              <h5>Name: <?php echo $_SESSION['username']; ?></h5>
+              <h5>Email: <?php echo $_SESSION['email']; ?></h5>
+              <?php
+              $allUserLoggedInPosts = $post->viewPostsByUser($_SESSION['user_id']);
+              if(!empty($allUserLoggedInPosts)){
+                foreach ($post->viewPostsByUser($_SESSION['user_id']) as $column) { 
+                  ?>
+                  <div class="card shadow-sm mb-5 mt-4 bg-body rounded">
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="col-12">
+                          <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
+                            <input type="hidden" value="<?php echo $column['id']; ?>" name="post_id">
+                            <a href="post-edit.php?id=<?php echo $column['id']; ?>" class="btn btn-primary float-end" style="margin-left: 4px;">Edit</a>
+                            <input type="submit" class="btn btn-danger float-end" value="Delete" name="deleteBtn">
+                          </form>
+                          <h4 class="mt-4"><?php echo $column['title']; ?></h4>
+                          <small><i><?php echo date("D, d M Y H:i:s", strtotime($column['date_created'])); ?></i></small>
+                          <p><?php echo $column['description']; ?></p>  
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
+                <?php }} else {
+                  echo "<h2 class='mt-4 text-success'>You may start posting blogs now!</h2>";
+                }
+                ?>
               </div>
-            <?php }} else {
-              echo "<h2 class='mt-4 text-success'>You may start posting blogs now!</h2>";
-            }
-            ?>
+            </div>
           </div>
           <div class="col-md-6">
             <div class="card">
@@ -101,7 +101,7 @@ if(isset($_POST['deleteBtn'])) {
                   $allFriends = $friend->viewFriendsByUser($_SESSION['user_id']); 
                   if(!empty($allFriends)) {
                     foreach ($allFriends as $column) {
-                  ?>
+                      ?>
                       <tbody>
                         <tr>
                           <td><?php echo $column['friend_name']; ?></td>

@@ -93,23 +93,23 @@ class Post {
 	public function viewAllPostsByFriends($user) {
 		try {
 			$sql = "
-			SELECT 
-				users.id AS user_id,
-				users.username AS username, 
-				posts.id AS post_id, 
-				posts.title AS title, 
-				posts.description AS description, 
-				posts.date_created AS date_created
-			FROM posts
-			JOIN users ON users.id = posts.user
-			JOIN friends ON posts.user = friends.friend_id
-			WHERE friends.friend_id IN (
-				SELECT friend_id FROM friends WHERE user = ?
-			);
-			ORDER BY date_created DESC
-			";
+					SELECT 
+						users.id AS user_id,
+						users.username AS username, 
+						posts.id AS post_id, 
+						posts.title AS title, 
+						posts.description AS description, 
+						posts.date_created AS date_created
+					FROM posts
+					JOIN users ON users.id = posts.user
+					JOIN friends ON posts.user = friends.friend_id
+					WHERE users.id = ? OR friends.friend_id IN (
+						SELECT friend_id FROM friends WHERE user = ?
+					)
+					ORDER BY date_created DESC;
+					";
 			$stmt = $this->pdo->prepare($sql);
-			$stmt->execute([$user]);
+			$stmt->execute([$user,$user]);
 
 			return $stmt->fetchAll();
 
@@ -147,6 +147,7 @@ class Post {
 					FROM comments 
 					JOIN posts on comments.post_id = posts.id 
 					JOIN users on comments.user_id = users.id WHERE posts.id=?
+					ORDER BY comments.date_created DESC;
 					";
 			$stmt = $this->pdo->prepare($sql);
 			$stmt->execute([$post_id]);
