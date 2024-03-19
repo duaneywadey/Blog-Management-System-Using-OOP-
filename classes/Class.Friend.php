@@ -48,6 +48,29 @@ class Friend {
 		}
 	}
 
+	public function viewFriendRequestsByUser($user) {
+		try {
+			$sql = "SELECT 
+						users.username AS friend_name, 
+						friends.date_added AS date_added 
+					FROM users 
+					JOIN friends 
+						ON users.id = friends.friend_id 
+					WHERE user = ?
+					AND
+					is_accepted = 0
+					";
+
+			$stmt = $this->pdo->prepare($sql);
+			$stmt->execute([$user]);
+			return $stmt->fetchAll();
+		}
+		catch (PDOException $e){
+			die($e->getMessage());
+		}
+
+	}
+
 	public function viewFriendsByUser($user) {
 		try {
 			$sql = "SELECT 
@@ -56,7 +79,10 @@ class Friend {
 					FROM users 
 					JOIN friends 
 						ON users.id = friends.friend_id 
-					WHERE user = ?";
+					WHERE user = ?
+					AND
+					is_accepted = 1
+					";
 
 			$stmt = $this->pdo->prepare($sql);
 			$stmt->execute([$user]);
