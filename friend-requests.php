@@ -1,5 +1,16 @@
 <?php 
 require_once('config/load-classes.php');
+
+if (isset($_POST['acceptFriendRequest'])) {
+  $friends_id = $_POST['friends_id'];
+  $friend->acceptAFriendRequest($friends_id);
+}
+
+if (isset($_POST['deleteFriendRequest'])) {
+  $friends_id = $_POST['friends_id'];
+  $friend->rejectAFriendRequest($friends_id);
+}
+
 ?>
 
 <!doctype html>
@@ -23,6 +34,11 @@ require_once('config/load-classes.php');
               <h2>Friend Requests</h2>
             </div>
             <div class="card-body">
+              <?php 
+                $allFriends = $friend->viewFriendRequestsByUser($_SESSION['user_id']); 
+                if(!empty($allFriends)) {
+                  foreach ($allFriends as $column) {
+              ?>
               <table class="table">
                 <thead>
                   <tr>
@@ -32,28 +48,25 @@ require_once('config/load-classes.php');
                     <th scope="col">Delete</th>
                   </tr>
                 </thead>
-                <?php 
-                $allFriends = $friend->viewFriendRequestsByUser($_SESSION['user_id']); 
-                if(!empty($allFriends)) {
-                  foreach ($allFriends as $column) {
-                    ?>
                     <tbody>
                       <tr>
                         <td><?php echo $column['friend_name']; ?></td>
                         <td><?php echo date("D, d M Y H:i:s", strtotime($column['date_added'])); ?></td>
                         <td>
-                          <form action="#">
-                            <input type="submit" class="btn btn-primary" value="Accept">
+                          <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
+                            <input type="hidden" value="<?php echo $column['add_friend_id']; ?>" name="friends_id">
+                            <button type="submit" class="btn btn-primary" name="acceptFriendRequest">Accept</button>
                           </form>
                         </td>
                         <td>
-                          <form action="#">
-                            <button type="submit" class="btn btn-danger" value="Delete"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                          <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
+                            <input type="hidden" value="<?php echo $column['add_friend_id']; ?>" name="friends_id">
+                            <button type="submit" class="btn btn-danger" value="Delete" name="deleteFriendRequest"><i class="fa fa-trash" aria-hidden="true"></i></button>
                           </form>
                         </td>
                       </tr>
                     <?php }} else {
-                      echo "<p class='text-center'>You may add some new friends!</p>"; 
+                      echo "<p class='text-center'>All your friend requests will appear here</p>"; 
                     }
                     ?>
                   </tbody>

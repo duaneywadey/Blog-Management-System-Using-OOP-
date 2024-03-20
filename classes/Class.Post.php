@@ -19,8 +19,7 @@ class Post {
 		try {
 			$sql = "INSERT INTO posts (user,title,description) VALUES(?,?,?)";
 			$stmt = $this->pdo->prepare($sql);
-			$db_execute = $stmt->execute([$user, $title, $description]);
-			return true;
+			$stmt->execute([$user, $title, $description]);
 		} 
 		catch (PDOException $e) {
 			die($e->getMessage());
@@ -103,7 +102,11 @@ class Post {
 					FROM posts
 					JOIN users ON users.id = posts.user
 					WHERE users.id = ? OR users.id IN (
-						SELECT friend_id FROM friends WHERE user = ?
+						SELECT 
+							user_who_added 
+						FROM friends 
+						WHERE is_accepted = 1 
+						AND user_being_added = ?
 					)						
 					ORDER BY date_created DESC;
 					";

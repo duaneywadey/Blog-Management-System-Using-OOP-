@@ -9,15 +9,8 @@ if(isset($_POST['createPost'])) {
   $user = $_SESSION['user_id'];
   $title = $_POST['title'];
   $description = $_POST['description'];
-  $is_successful = $post->createPost($user, $title, $description);
-
-  if($is_successful === true) {
-    echo "<script>alert('Record saved'); window.location.href='index.php'; </script>";
-    exit();
-  }else {
-    echo "Error";
-  }
-
+  $post->createPost($user, $title, $description);
+  
 }
 
 ?>

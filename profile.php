@@ -90,6 +90,11 @@ if(isset($_POST['deleteBtn'])) {
               </div>
 
               <div class="card-body">
+                <?php 
+                  $allFriends = $friend->viewFriendsByUser($_SESSION['user_id']); 
+                  if(!empty($allFriends)) {
+                    foreach ($allFriends as $column) {
+                ?>
                 <table class="table">
                   <thead>
                     <tr>
@@ -97,22 +102,17 @@ if(isset($_POST['deleteBtn'])) {
                       <th scope="col">Date Added</th>
                     </tr>
                   </thead>
-                  <?php 
-                  $allFriends = $friend->viewFriendsByUser($_SESSION['user_id']); 
-                  if(!empty($allFriends)) {
-                    foreach ($allFriends as $column) {
-                      ?>
                       <tbody>
                         <tr>
                           <td><?php echo $column['friend_name']; ?></td>
                           <td><?php echo date("D, d M Y H:i:s", strtotime($column['date_added'])); ?></td>
                         </tr>
-                      <?php }} else {
-                        echo "<p class='text-center'>You may add some new friends!</p>"; 
-                      }
-                      ?>
                     </tbody>
                   </table>
+                  <?php }} else {
+                        echo "<p class='text-center'>You may add some new friends!</p>"; 
+                      }
+                  ?>
                 </div>
 
               </div>
