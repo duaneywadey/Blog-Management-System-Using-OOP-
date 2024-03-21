@@ -34,11 +34,6 @@ if (isset($_POST['deleteFriendRequest'])) {
               <h2>Friend Requests</h2>
             </div>
             <div class="card-body">
-              <?php 
-                $allFriends = $friend->viewFriendRequestsByUser($_SESSION['user_id']); 
-                if(!empty($allFriends)) {
-                  foreach ($allFriends as $column) {
-              ?>
               <table class="table">
                 <thead>
                   <tr>
@@ -48,7 +43,12 @@ if (isset($_POST['deleteFriendRequest'])) {
                     <th scope="col">Delete</th>
                   </tr>
                 </thead>
-                    <tbody>
+                <tbody>
+                  <?php 
+                  $allFriends = $friend->viewFriendRequestsByUser($_SESSION['user_id']); 
+                  if(!empty($allFriends)) {
+                    foreach ($allFriends as $column) {
+                  ?>
                       <tr>
                         <td><?php echo $column['friend_name']; ?></td>
                         <td><?php echo date("D, d M Y H:i:s", strtotime($column['date_added'])); ?></td>
