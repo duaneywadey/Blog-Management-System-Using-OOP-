@@ -103,14 +103,14 @@ if(isset($_POST['deleteBtn'])) {
                       if(!empty($allFriends)) {
                         foreach ($allFriends as $column) {
                           if($column['user_id'] != $_SESSION['user_id']) {
-                      ?>
+                            ?>
                             <td><?php echo $column['friend_name']; ?></td>
                             <td><?php echo date("D, d M Y H:i:s", strtotime($column['date_added'])); ?></td>
                           </tr>
                         <?php }}} else {
                           echo "<p class='text-center'>You may add some new friends!</p>"; 
                         }
-                        ?>  
+                        ?>
                       </tbody>
                     </table>
                   </div>

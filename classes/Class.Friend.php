@@ -1,5 +1,9 @@
 <?php 
 
+// For debugging
+// require_once('../config/dbcon.php');
+
+
 class Friend {
 	protected $pdo;
 
@@ -134,4 +138,10 @@ class Friend {
 	}
 
 }
+
+// $friend = new Friend($pdo);
+// $allObjs = $friend->viewFriendsByUser(8);
+// $userIds = array_column($allObjs, 'friend_name');
+// print_r(array_unique($userIds));
+
 ?>
