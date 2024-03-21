@@ -103,16 +103,16 @@ class Post {
 					JOIN users ON users.id = posts.user
 					WHERE users.id = ? OR users.id IN (
 						SELECT 
-							user_who_added 
+							user_who_added
 						FROM friends 
-						WHERE is_accepted = 1 
-						AND user_being_added = ?
+						WHERE user_who_added = ? OR user_being_added = ?
+						AND is_accepted = 1 
 					)						
 					ORDER BY date_created DESC;
 					";
 
 			$stmt = $this->pdo->prepare($sql);
-			$stmt->execute([$user,$user]);
+			$stmt->execute([$user,$user,$user]);
 
 			return $stmt->fetchAll();
 

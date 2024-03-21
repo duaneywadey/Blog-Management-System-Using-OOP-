@@ -33,13 +33,15 @@ class Friend {
 			$stmt->execute([$user, $friend_id]);
 			$howMany = $stmt->rowCount();
 			if($howMany > 0) {
-				echo "<script>alert('You already added this person.');</script>";
+				echo "<script>alert('This person is already a friend!');</script>";
 			}
 			else {
 				$stmt->closeCursor();
 				$sql = "INSERT INTO friends(user_who_added, user_being_added) VALUES(?,?)";
 				$stmt = $this->pdo->prepare($sql);
 				$stmt->execute([$user, $friend_id]);
+				echo "<script>alert('Successfully added!');</script>";
+
 			}
 			
 		}
@@ -107,18 +109,22 @@ class Friend {
 	public function viewFriendsByUser($user) {
 		try {
 			$sql = "SELECT 
+						users.id AS user_id,
 						users.username AS friend_name, 
 						friends.date_added AS date_added 
 					FROM users 
 					JOIN friends 
 						ON users.id = friends.user_who_added 
-					WHERE user_being_added = ?
-					AND
-					is_accepted = 1
+						OR users.id = friends.user_being_added
+					WHERE 
+						friends.user_being_added = ? 
+						OR 
+						friends.user_who_added = ? 
+						AND is_accepted = 1
 					";
 
 			$stmt = $this->pdo->prepare($sql);
-			$stmt->execute([$user]);
+			$stmt->execute([$user, $user]);
 			return $stmt->fetchAll();
 		}
 		catch (PDOException $e){
