@@ -26,7 +26,7 @@ class Friend {
 		}
 		catch (PDOException $e) {
 			die($e->getMessage());
-		}
+		}	
 	}
 
 	public function addAFriend($user, $friend_id) {
@@ -87,17 +87,18 @@ class Friend {
 	public function viewFriendRequestsByUser($user) {
 		try {
 			$sql = "SELECT 
+						users.id AS user_id,
 						users.username AS friend_name, 
 						friends.id AS add_friend_id,
 						friends.user_who_added AS user_who_added,
 						friends.user_being_added AS user_being_added,
-						friends.date_added AS date_added 
+						friends.date_added AS date_added,
+						friends.is_accepted AS friend_is_accepted
 					FROM users 
 					JOIN friends 
 						ON users.id = friends.user_who_added 
-					WHERE friends.user_being_added = ?
-					AND
-					is_accepted = 0
+					WHERE 
+					friends.is_accepted = 0 AND friends.user_being_added = ?
 					";
 
 			$stmt = $this->pdo->prepare($sql);
@@ -112,20 +113,39 @@ class Friend {
 
 	public function viewFriendsByUser($user) {
 		try {
-			$sql = "SELECT 
+			// $sql = "SELECT 
+			// 			users.id AS user_id,
+			// 			users.username AS friend_name, 
+			// 			friends.date_added AS date_added,
+			// 			friends.is_accepted AS friend_is_accepted
+			// 		FROM users 
+			// 		JOIN friends 
+			// 			ON users.id = friends.user_who_added 
+			// 			OR users.id = friends.user_being_added
+			// 		WHERE
+			// 			friends.is_accepted = 1 AND friends.user_being_added = ? 
+			// 			OR friends.user_who_added = ?  
+			// 		";
+
+			$sql = "SELECT
 						users.id AS user_id,
-						users.username AS friend_name, 
-						friends.date_added AS date_added 
-					FROM users 
-					JOIN friends 
-						ON users.id = friends.user_who_added 
-						OR users.id = friends.user_being_added
-					WHERE 
-						friends.user_being_added = ? 
-						OR 
-						friends.user_who_added = ? 
-						AND is_accepted = 1
-					";
+						users.username AS friend_name,
+						friends.date_added AS date_added
+					FROM users
+					JOIN friends ON friends.user_who_added = users.id
+					WHERE friends.user_being_added = ? AND friends.is_accepted = 1
+
+					UNION
+
+					SELECT
+						users.id AS user_id,
+						users.username AS friend_name,
+						friends.date_added AS date_added
+						
+					FROM users
+					JOIN friends ON friends.user_being_added = users.id
+					WHERE friends.user_who_added = ? AND friends.is_accepted = 1
+				";
 
 			$stmt = $this->pdo->prepare($sql);
 			$stmt->execute([$user, $user]);
@@ -140,8 +160,9 @@ class Friend {
 }
 
 // $friend = new Friend($pdo);
-// $allObjs = $friend->viewFriendsByUser(8);
-// $userIds = array_column($allObjs, 'friend_name');
-// print_r(array_unique($userIds));
+// $allObjs = $friend->viewFriendsByUser(10);
+// foreach ($allObjs as $column) {
+// 	echo $column['friend_name'] . "\n" . $column['friend_is_accepted'] . "<br>";
+// }
 
 ?>

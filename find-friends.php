@@ -42,7 +42,7 @@ if (isset($_POST['addNewFriend'])) {
                   <input type="hidden" name="friend_id" value='<?php echo $column['id']; ?>'>
                   <?php if(in_array($column['id'], $uniqueUserIdsConfirmedFriends)) { ?>
                     <input type="submit" class="btn btn-light" value="Already a friend!" name="addNewFriend" disabled>
-                  <?php } else { ?>
+                  <?php } else {?>
                     <input type="submit" class="btn btn-primary" value="Add Friend" name="addNewFriend">
                   <?php } ?>
                 </form>
