@@ -37,7 +37,7 @@ class Friend {
 			$stmt->execute([$user, $friend_id]);
 			$howMany = $stmt->rowCount();
 			if($howMany > 0) {
-				echo "<script>alert('This person is already a friend!');</script>";
+				echo "<script>alert('Friend request already sent!');</script>";
 			}
 			else {
 				$stmt->closeCursor();
@@ -141,7 +141,7 @@ class Friend {
 						users.id AS user_id,
 						users.username AS friend_name,
 						friends.date_added AS date_added
-						
+
 					FROM users
 					JOIN friends ON friends.user_being_added = users.id
 					WHERE friends.user_who_added = ? AND friends.is_accepted = 1
