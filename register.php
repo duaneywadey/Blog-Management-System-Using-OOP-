@@ -1,10 +1,6 @@
 <?php 
 
-session_start();
-require_once('config/dbcon.php');
-require_once('classes/Class.User.php');
-
-$user = new User($pdo);
+require_once('php/load_classes.php');
 
 $errors = array();
 

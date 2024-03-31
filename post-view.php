@@ -1,17 +1,10 @@
 <?php 
 
-session_start();
-require_once('config/dbcon.php');
-require_once('classes/Class.User.php');
-require_once('classes/Class.Post.php');
-
-$user = new User($pdo);
-$post = new Post($pdo);
+require_once('php/load_classes.php');
 
 if (!$user->isLoggedIn()) {
 	$user->redirect('login.php');
 }
-
 
 // Included in the URL, to get view all comments
 if(isset($_GET["id"]) && !empty($_GET['id'])) {

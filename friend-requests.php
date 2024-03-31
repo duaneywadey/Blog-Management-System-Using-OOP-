@@ -1,5 +1,5 @@
 <?php 
-require_once('config/load-classes.php');
+require_once('php/load_classes.php');
 
 if (isset($_POST['acceptFriendRequest'])) {
   $friends_id = $_POST['friends_id'];

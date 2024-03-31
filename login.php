@@ -1,35 +1,18 @@
 <?php 
-session_start();
-
-require_once('config/dbcon.php');
-require_once('classes/Class.User.php');
-
-$user = new User($pdo);
+require_once('php/load_classes.php');
 
 $errors = array();
 
 
-if(isset($_GET['joined'])) {
-    echo "<script>alert('Welcome to the app!')</script>";
-}
-
-if ($user->isLoggedIn()) 
-{
+if ($user->isLoggedIn()) {
     $user->redirect('index.php');
 }
 
 if(isset($_POST['loginBtn'])) {
    $uname = $_POST['user'];
    $pass = $_POST['password'];
-   $login = $user->login($uname, $pass);
-
-   if ($login === true) {
-      $user->redirect('index.php');
-   } 
-   else {
-        echo $login;
-   }
-   
+   $user->login($uname, $pass);
+   $user->redirect('index.php'); 
 }
 
 ?>
